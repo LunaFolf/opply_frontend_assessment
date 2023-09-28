@@ -4,7 +4,10 @@ const store = useAuthenticationStore()
 
 const userObject = {
   username: '',
-  password: ''
+  password: '',
+  first_name: '',
+  last_name: '',
+  email: ''
 }
 
 const getInputType = (inputName: string) => {
@@ -14,7 +17,7 @@ const getInputType = (inputName: string) => {
 }
 
 const submit = () => {
-  store.login(userObject.username, userObject.password)
+  store.signup(userObject.username, userObject.password, userObject.first_name, userObject.last_name, userObject.email)
 }
 </script>
 
@@ -23,10 +26,10 @@ const submit = () => {
     <div v-for="inputName in Object.keys(userObject)" :key="inputName">
       <label :for="inputName">{{ inputName }}</label>
       <input
-          :name="inputName"
-          :type="getInputType(inputName)"
-          v-model="userObject[inputName]"
-          @keydown.enter="submit"
+        :name="inputName"
+        :type="getInputType(inputName)"
+        v-model="userObject[inputName]"
+        @keydown.enter="submit"
       />
     </div>
     <button @click="submit">Login</button>

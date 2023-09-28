@@ -3,6 +3,20 @@ import { useLocalStorage } from '@vueuse/core'
 import { defineStore } from 'pinia'
 import { computed } from "vue"
 
+type loginResponseData = {
+  token: string
+}
+
+type signupResponseData = {
+  id: string,
+  username: string,
+  password: string, // Why??
+  first_name: string,
+  last_name: string,
+  email: string,
+  auth_token: string
+}
+
 const temporaryErrorHandler = (errorMessage?: string, errorData?: any) => {
   console.error(errorMessage || 'Temporary error, this should be handled by UI elements (i.e. toasts) to properly inform the user.')
   throw new Error(errorData)
@@ -14,7 +28,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
 
   const apiUrl = import.meta.env.VITE_FEB_API_URL
   async function login (username: string, password: string) {
-    const authenticationResponse = await fetch(`${apiUrl}/api-token-auth/`, {
+    const loginResponse = await fetch(`${apiUrl}/api-token-auth/`, {
       method: 'POST',
       body: JSON.stringify({
         username,
@@ -25,17 +39,47 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       }
     })
 
-    if (!authenticationResponse.ok) {
-      temporaryErrorHandler('Bad Response', authenticationResponse)
+    if (!loginResponse.ok) {
+      temporaryErrorHandler('Bad Response', loginResponse)
     }
 
-    const authenticationData: { ["token"]: string } = await authenticationResponse.json()
+    const loginData: loginResponseData = await loginResponse.json()
 
-    if (!authenticationData.token) {
-      temporaryErrorHandler('Something wrong with authenticationData JSON', authenticationData)
+    if (!loginData.token) {
+      temporaryErrorHandler('Something wrong with loginData JSON', loginData)
     }
 
-    token.value = authenticationData.token
+    token.value = loginData.token
+
+    await router.push({ name: 'home' })
+  }
+
+  async function signup (username: string, password: string, first_name: string, last_name:string, email: string) {
+    const signupResponse = await fetch(`${apiUrl}/api/v1/users/`, {
+      method: 'POST',
+      body: JSON.stringify({
+        username,
+        password,
+        first_name,
+        last_name,
+        email
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+
+    if (!signupResponse.ok) {
+      temporaryErrorHandler('Bad Response', signupResponse)
+    }
+
+    const signupData: signupResponseData = await signupResponse.json()
+
+    if (!signupData.auth_token) {
+      temporaryErrorHandler('Something wrong with signupData JSON', signupData)
+    }
+
+    token.value = signupData.auth_token
 
     await router.push({ name: 'home' })
   }
@@ -46,5 +90,5 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     await router.push({name: 'login'})
   }
 
-  return { token, userIsAuthenticated, login, logout }
+  return { token, userIsAuthenticated, login, signup, logout }
 })
