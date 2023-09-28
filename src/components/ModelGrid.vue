@@ -8,13 +8,13 @@ defineProps<{
 <template>
   <div class="grid">
     <div class="item header">
-      <div @click.stop="$emit('click-sort', { fieldName })" v-for="fieldName in schema" :key="fieldName" :class="`item__sort__${fieldName}`">
+      <div @click.stop="$emit('touch', { type: 'sort', fieldName })" v-for="fieldName in schema" :key="fieldName" :class="`item__sort__${fieldName}`">
         {{ fieldName }}
       </div>
     </div>
 
-    <div @click="$emit('click-item', { item })" class="item" v-for="item in data" :key="item">
-      <div @click.stop="$emit('click-field', { item, fieldName })" v-for="fieldName in schema" :key="fieldName" :class="`item__${fieldName}`">
+    <div @click="$emit('touch', { type: 'item', item })" class="item" v-for="item in data" :key="item">
+      <div @click.stop="$emit('touch', { type: 'field', item, fieldName })" v-for="fieldName in schema" :key="fieldName" :class="`item__${fieldName}`">
         {{ item[fieldName] || 'ass' }}
       </div>
     </div>

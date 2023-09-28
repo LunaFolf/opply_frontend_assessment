@@ -29,7 +29,13 @@ const authStore = useAuthenticationStore()
     </div>
   </header>
 
-  <RouterView />
+  <Suspense>
+    <RouterView />
+
+    <template #fallback>
+      Loading...
+    </template>
+  </Suspense>
 </template>
 
 <style scoped>

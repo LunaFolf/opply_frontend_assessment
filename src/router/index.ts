@@ -36,6 +36,12 @@ const router = createRouter({
       beforeEnter
     },
     {
+      path: '/suppliers/:id',
+      name: 'supplierDetail',
+      component: () => import('../views/Suppliers/DetailView.vue'),
+      beforeEnter
+    },
+    {
       path: '/quotes',
       name: 'quotes',
       component: () => import('../views/Quotes/IndexView.vue'),

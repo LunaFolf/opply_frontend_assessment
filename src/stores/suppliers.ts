@@ -10,6 +10,13 @@ type SupplierData = {
   description: string
 }
 
+type SuppliersDataJSON = {
+  count: number,
+  next: string,
+  previous: string,
+  results: SupplierData[]
+}
+
 const temporaryErrorHandler = (errorMessage?: string, errorData?: any) => {
   console.error(errorMessage || 'Temporary error, this should be handled by UI elements (i.e. toasts) to properly inform the user.')
   throw new Error(errorData)
@@ -18,9 +25,9 @@ const temporaryErrorHandler = (errorMessage?: string, errorData?: any) => {
 export const useSuppliersStore = defineStore('suppliers', () => {
   const suppliers = useSessionStorage('suppliers', [] as SupplierData[])
 
-  async function refreshSuppliers () {
-    const authStore = useAuthenticationStore()
+  const authStore = useAuthenticationStore()
 
+  async function refreshSuppliers () {
     const suppliersDataResponse = await fetch(`${apiUrl}/api/v1/suppliers/`, {
       headers: {
         'Authorization': `Token ${authStore.token}`
@@ -29,14 +36,36 @@ export const useSuppliersStore = defineStore('suppliers', () => {
 
     if (!suppliersDataResponse.ok) temporaryErrorHandler(undefined, suppliersDataResponse)
 
-    const suppliersData = await suppliersDataResponse.json()
+    const suppliersData: SuppliersDataJSON = await suppliersDataResponse.json()
 
     suppliers.value = suppliersData.results
+  }
+
+  async function getSupplier (searchID: number) {
+    const supplierFromCache = suppliers.value.find(supplier => supplier.id === searchID)
+
+    console.log({ supplierFromCache })
+
+    if (supplierFromCache) return (supplierFromCache as SupplierData)
+
+    const supplierResponse = await fetch(`${apiUrl}/api/v1/suppliers/${searchID}`, {
+      headers: {
+        'Authorization': `Token ${authStore.token}`
+      }
+    })
+
+    if (!supplierResponse.ok) temporaryErrorHandler(undefined, supplierResponse)
+
+    const supplierData: SupplierData = await supplierResponse.json()
+
+    console.log({ supplierData })
+
+    return supplierData
   }
 
   function clear() {
     suppliers.value = []
   }
 
-  return { suppliers, refreshSuppliers, clear }
+  return { suppliers, refreshSuppliers, getSupplier, clear }
 })
