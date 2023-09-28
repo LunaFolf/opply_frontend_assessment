@@ -1,5 +1,7 @@
+import router from '../router'
 import { useLocalStorage } from '@vueuse/core'
 import { defineStore } from 'pinia'
+import { computed } from "vue"
 
 const temporaryErrorHandler = (errorMessage?: string, errorData?: any) => {
   console.error(errorMessage || 'Temporary error, this should be handled by UI elements (i.e. toasts) to properly inform the user.')
@@ -8,10 +10,11 @@ const temporaryErrorHandler = (errorMessage?: string, errorData?: any) => {
 
 export const useAuthenticationStore = defineStore('authentication', () => {
   const token = useLocalStorage('auth_token', '')
+  const userIsAuthenticated = computed(() => token.value.length > 0)
 
+  const apiUrl = import.meta.env.VITE_FEB_API_URL
   async function login (username: string, password: string) {
-    // TODO: Move API URL to .env
-    const authenticationResponse = await fetch('https://february-21.herokuapp.com/api-token-auth/', {
+    const authenticationResponse = await fetch(`${apiUrl}/api-token-auth/`, {
       method: 'POST',
       body: JSON.stringify({
         username,
@@ -32,8 +35,16 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       temporaryErrorHandler('Something wrong with authenticationData JSON', authenticationData)
     }
 
-    token.value =  authenticationData.token
+    token.value = authenticationData.token
+
+    await router.push({ name: 'home' })
   }
 
-  return { token, login }
+  async function logout () {
+    token.value = ''
+
+    await router.push({name: 'login'})
+  }
+
+  return { token, userIsAuthenticated, login, logout }
 })

@@ -5,10 +5,6 @@ const store = useAuthenticationStore()
 
 <template>
   <div>
-    <h1>Login page goes here :3</h1>
-    <p><strong>Current Auth Token: </strong> {{ store.token }}</p>
-
-    <p>Hit button to login</p>
     <button @click="store.login('username', 'password')">Login</button>
   </div>
 </template>
