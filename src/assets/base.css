@@ -10,6 +10,10 @@
 
   --vt-c-indigo: #2c3e50;
 
+  --vt-c-vuegreen: hsla(160, 100%, 37%, 1);
+  --vt-c-vuegreen-soft: hsla(160, 100%, 30%, 1);
+  --vt-c-vuegreen-mute: hsla(160, 5%, 37%, 1);
+
   --vt-c-divider-light-1: rgba(60, 60, 60, 0.29);
   --vt-c-divider-light-2: rgba(60, 60, 60, 0.12);
   --vt-c-divider-dark-1: rgba(84, 84, 84, 0.65);
