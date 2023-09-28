@@ -12,8 +12,13 @@ const authStore = useAuthenticationStore()
           <RouterLink to="/">Home</RouterLink>
         </template>
 
+        <template v-if="authStore.userIsAuthenticated">
+          <RouterLink to="/suppliers">Suppliers</RouterLink>
+          <RouterLink to="/quotes">Quotes</RouterLink>
 
-        <a v-if="authStore.userIsAuthenticated" href="#" @click="authStore.logout()">Logout</a>
+          <!-- Always put last -->
+          <a href="#" @click="authStore.logout()">Logout</a>
+        </template>
 
         <template v-else>
           <RouterLink to="/login">Login</RouterLink>
@@ -23,6 +28,8 @@ const authStore = useAuthenticationStore()
       <small><strong>Current Auth Token: </strong> {{ authStore.token }}</small>
     </div>
   </header>
+
+  <hr />
 
   <RouterView />
 </template>

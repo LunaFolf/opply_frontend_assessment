@@ -3,6 +3,8 @@ import { useLocalStorage } from '@vueuse/core'
 import { defineStore } from 'pinia'
 import { computed } from "vue"
 
+const apiUrl = import.meta.env.VITE_FEB_API_URL
+
 type loginResponseData = {
   token: string
 }
@@ -26,7 +28,6 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   const token = useLocalStorage('auth_token', '')
   const userIsAuthenticated = computed(() => token.value.length > 0)
 
-  const apiUrl = import.meta.env.VITE_FEB_API_URL
   async function login (username: string, password: string) {
     const loginResponse = await fetch(`${apiUrl}/api-token-auth/`, {
       method: 'POST',
