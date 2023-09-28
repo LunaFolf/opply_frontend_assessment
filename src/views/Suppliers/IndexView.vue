@@ -1,21 +1,15 @@
 <script setup lang="ts">
 import { useSuppliersStore } from "@/stores/suppliers"
+import ModelGrid from "@/components/ModelGrid.vue";
+
 const suppliersStore = useSuppliersStore()
 
 suppliersStore.refreshSuppliers()
 </script>
 
 <template>
-  <table>
-    <tr>
-      <th>ID</th>
-      <th>Name</th>
-      <th>Description</th>
-    </tr>
-    <tr v-for="supplier in suppliersStore.suppliers" :key="supplier.id">
-      <td>{{ supplier.id }}</td>
-      <td>{{ supplier.name }}</td>
-      <td>{{ supplier.description }}</td>
-    </tr>
-  </table>
+  <model-grid
+    :schema="['id', 'name', 'description']"
+    :data="suppliersStore.suppliers"
+  />
 </template>
