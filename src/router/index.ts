@@ -32,12 +32,14 @@ const router = createRouter({
     {
       path: '/suppliers',
       name: 'suppliers',
-      component: () => import('../views/Suppliers/IndexView.vue')
+      component: () => import('../views/Suppliers/IndexView.vue'),
+      beforeEnter
     },
     {
       path: '/quotes',
       name: 'quotes',
-      component: () => import('../views/Quotes/IndexView.vue')
+      component: () => import('../views/Quotes/IndexView.vue'),
+      beforeEnter
     }
   ]
 })

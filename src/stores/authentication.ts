@@ -2,6 +2,8 @@ import router from '../router'
 import { useLocalStorage } from '@vueuse/core'
 import { defineStore } from 'pinia'
 import { computed } from "vue"
+import { useSuppliersStore } from "@/stores/suppliers"
+import { useQuotesStore } from "@/stores/quotes"
 
 const apiUrl = import.meta.env.VITE_FEB_API_URL
 
@@ -86,7 +88,14 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   }
 
   async function logout () {
-    token.value = ''
+    const supplierStore = useSuppliersStore()
+    const quotesStore = useQuotesStore()
+
+    token.value = '' // Wipe the token, essentially logs us out because we can't authenticate anymore
+
+    // Clear stores that contain sensitive data, that would normally require the user to be authenticated to view
+    supplierStore.clear()
+    quotesStore.clear()
 
     await router.push({name: 'login'})
   }

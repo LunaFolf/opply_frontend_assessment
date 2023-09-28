@@ -29,8 +29,6 @@ const authStore = useAuthenticationStore()
     </div>
   </header>
 
-  <hr />
-
   <RouterView />
 </template>
 

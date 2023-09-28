@@ -1,10 +1,7 @@
-import router from '../router'
 import { useSessionStorage } from '@vueuse/core'
 import { defineStore } from 'pinia'
-import { computed } from "vue"
 import { useAuthenticationStore } from "@/stores/authentication"
 
-const authStore = useAuthenticationStore()
 const apiUrl = import.meta.env.VITE_FEB_API_URL
 
 type QuoteData = {
@@ -24,6 +21,7 @@ export const useQuotesStore = defineStore('quotes', () => {
   const quotes = useSessionStorage('quotes', [] as QuoteData[])
 
   async function refreshQuotes () {
+    const authStore = useAuthenticationStore()
     const quotesDataResponse = await fetch(`${apiUrl}/api/v1/quotes/`, {
       headers: {
         'Authorization': `Token ${authStore.token}`
@@ -37,5 +35,9 @@ export const useQuotesStore = defineStore('quotes', () => {
     quotes.value = suppliersData.results
   }
 
-  return { quotes, refreshQuotes }
+  function clear() {
+    quotes.value = []
+  }
+
+  return { quotes, refreshQuotes, clear }
 })
