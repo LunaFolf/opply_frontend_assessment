@@ -19,7 +19,7 @@ async function loadPage (page: number = 1) {
 }
 
 const handleClick = (event: { type: string, item?: any, fieldName?: string }) => {
-  const { type, item, fieldName } = event
+  const { item } = event
 
   if (!item) return
 

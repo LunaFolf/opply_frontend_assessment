@@ -37,10 +37,6 @@ input.error, select.error {
   border-color: #D11E1E;
 }
 
-input.error {
-  background: url(./icon/error.svg) no-repeat 8px 50%;
-}
-
 input[type="checkbox"] {
   appearance: none;
   background-color: #fff;
