@@ -1,0 +1,36 @@
+name: Build and Deploy
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use bun.sh latest
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+          cache: 'bun'
+
+      - name: Install dependencies
+        run: bun i
+
+      - name: Build
+        run: bun run build
+
+      - name: Deploy to S3
+        uses: reggionick/s3-deploy@v3
+        with:
+          folder: dist
+          bucket: supplydemo.folf.io
+          bucket-region: eu-west-2
+          delete-removed: true
+          no-cache: true
+          private: true
