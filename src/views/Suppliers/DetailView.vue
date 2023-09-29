@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { useSuppliersStore } from "@/stores/suppliers"
+import { useRoute } from "vue-router";
 const suppliersStore = useSuppliersStore()
+const route = useRoute()
 
-const supplier = await suppliersStore.getSupplier(10)
+const supplier = await suppliersStore.getSupplier(Number(route.params.id))
 </script>
 
 <template>

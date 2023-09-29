@@ -27,8 +27,8 @@ export const useSuppliersStore = defineStore('suppliers', () => {
 
   const authStore = useAuthenticationStore()
 
-  async function refreshSuppliers () {
-    const suppliersDataResponse = await fetch(`${apiUrl}/api/v1/suppliers/`, {
+  async function refreshSuppliers (page: number = 1) {
+    const suppliersDataResponse = await fetch(`${apiUrl}/api/v1/suppliers/?page=${page}`, {
       headers: {
         'Authorization': `Token ${authStore.token}`
       }
@@ -39,6 +39,12 @@ export const useSuppliersStore = defineStore('suppliers', () => {
     const suppliersData: SuppliersDataJSON = await suppliersDataResponse.json()
 
     suppliers.value = suppliersData.results
+
+    return {
+      data: suppliers.value,
+      currentPage: page,
+      totalPages: Math.ceil(suppliersData.count / 10)
+    }
   }
 
   async function getSupplier (searchID: number) {
@@ -48,7 +54,7 @@ export const useSuppliersStore = defineStore('suppliers', () => {
 
     if (supplierFromCache) return (supplierFromCache as SupplierData)
 
-    const supplierResponse = await fetch(`${apiUrl}/api/v1/suppliers/${searchID}`, {
+    const supplierResponse = await fetch(`${apiUrl}/api/v1/suppliers/${searchID}/`, {
       headers: {
         'Authorization': `Token ${authStore.token}`
       }
